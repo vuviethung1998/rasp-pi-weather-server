@@ -1,11 +1,50 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="BranchesTreeState">
+    <expand>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="LOCAL_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+      <path>
+        <item name="ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="REMOTE_ROOT" type="e8cecc67:BranchNodeDescriptor" />
+        <item name="GROUP_NODE:origin" type="e8cecc67:BranchNodeDescriptor" />
+      </path>
+    </expand>
+    <select />
+  </component>
   <component name="ChangeListManager">
-    <list default="true" id="355e0f28-f514-4a26-8c09-0bc16a686f67" name="Default Changelist" comment="" />
+    <list default="true" id="355e0f28-f514-4a26-8c09-0bc16a686f67" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sensor-code/config.json" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/sensor-code/temp-humid-kafka.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="CodeStyleSettingsInfer">
+    <option name="done" value="true" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectCodeStyleSettingsMigration">
+    <option name="version" value="1" />
   </component>
   <component name="ProjectId" id="1joyqmWXLgECUkBZUWS1aiOuQ9Z" />
   <component name="ProjectViewState">
@@ -14,10 +53,16 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/sensor-code" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/sensor-code" />
+      <recent name="$PROJECT_DIR$" />
+    </key>
   </component>
   <component name="RunManager">
     <configuration name=" app" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
@@ -58,10 +103,22 @@
     </task>
     <servers />
   </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="WindowStateProjectService">
-    <state x="616" y="220" width="424" height="484" key="FileChooserDialogImpl" timestamp="1604485052580">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state x="532" y="191" width="374" height="411" key="FileChooserDialogImpl" timestamp="1604499058500">
+      <screen x="67" y="27" width="1299" height="741" />
     </state>
+    <state x="532" y="191" width="374" height="411" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1604499058500" />
     <state x="616" y="220" width="424" height="484" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1604485052580" />
     <state width="1487" height="219" key="GridCell.Tab.0.bottom" timestamp="1604485483964">
       <screen x="67" y="27" width="1533" height="873" />
@@ -79,9 +136,14 @@
       <screen x="67" y="27" width="1533" height="873" />
     </state>
     <state width="1487" height="219" key="GridCell.Tab.0.right/67.27.1533.873@67.27.1533.873" timestamp="1604485483964" />
-    <state x="388" y="55" width="1024" height="845" key="SettingsEditor" timestamp="1604485091763">
-      <screen x="67" y="27" width="1533" height="873" />
+    <state x="339" y="50" width="901" height="718" key="SettingsEditor" timestamp="1604499117640">
+      <screen x="67" y="27" width="1299" height="741" />
     </state>
+    <state x="339" y="50" width="901" height="718" key="SettingsEditor/67.27.1299.741@67.27.1299.741" timestamp="1604499117640" />
     <state x="388" y="55" width="1024" height="845" key="SettingsEditor/67.27.1533.873@67.27.1533.873" timestamp="1604485091763" />
+    <state x="379" y="89" width="672" height="678" key="search.everywhere.popup" timestamp="1604500360495">
+      <screen x="67" y="27" width="1299" height="741" />
+    </state>
+    <state x="379" y="89" width="672" height="678" key="search.everywhere.popup/67.27.1299.741@67.27.1299.741" timestamp="1604500360495" />
   </component>
 </project>
