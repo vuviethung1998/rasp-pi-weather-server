@@ -20,8 +20,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="355e0f28-f514-4a26-8c09-0bc16a686f67" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -51,7 +51,7 @@
   </component>
   <component name="PropertiesComponent">
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/sensor-code" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../water_resource_lab_DM" />
     <property name="project.structure.last.edited" value="SDKs" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -111,12 +111,13 @@
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="532" y="191" width="374" height="411" key="FileChooserDialogImpl" timestamp="1604499058500">
+    <state x="532" y="191" width="374" height="411" key="FileChooserDialogImpl" timestamp="1605021577384">
       <screen x="67" y="27" width="1299" height="741" />
     </state>
-    <state x="532" y="191" width="374" height="411" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1604499058500" />
+    <state x="532" y="191" width="374" height="411" key="FileChooserDialogImpl/67.27.1299.741@67.27.1299.741" timestamp="1605021577384" />
     <state x="616" y="220" width="424" height="484" key="FileChooserDialogImpl/67.27.1533.873@67.27.1533.873" timestamp="1604485052580" />
     <state width="1487" height="219" key="GridCell.Tab.0.bottom" timestamp="1604485483964">
       <screen x="67" y="27" width="1533" height="873" />
