@@ -1,5 +1,5 @@
 import sys
-import sim
+from  sim_module import sim
 import time
 import json
 from sensor_monitoring import humidity, temperature
