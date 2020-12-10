@@ -2,7 +2,8 @@ import sys
 from  sim_module import sim
 import time
 import json
-from sensor_monitoring import humidity, temperature
+from sensor_monitoring.humidity import humidity
+from sensor_monitoring.temperature import temperature
 from sensor_monitoring.dust import set_up_GPIO, read
 from sense_hat import SenseHat
 from time import sleep
