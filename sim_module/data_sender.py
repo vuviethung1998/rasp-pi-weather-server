@@ -13,8 +13,9 @@ def getConfig():
     return config
 
 def get_body_str(data):
-    body = {"records": [data]}
+    body = {"records": [{ "key": "sensor_device","value":data}]}
     body_str = json.dumps(body)
+
     return  body_str
 
 # get kafka rest proxy url
@@ -81,6 +82,7 @@ def get_data():
     # humid = humidity.humidity()
     temp = 0
     humid = 0
+
     data = {'dust_val': dust, 'temp_val': temp, 'humid_val': humid}
 
     return data
