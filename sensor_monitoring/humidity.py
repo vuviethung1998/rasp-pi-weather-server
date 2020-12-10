@@ -13,7 +13,7 @@ from time import sleep
 # 	sleep(1)
 # 	sense.show_message(str(round(temp,2)))
 
-def humidity():
+def get_humidity():
 	sense = SenseHat()
 	humidity = sense.get_humidity()
 	# print(humidity)
