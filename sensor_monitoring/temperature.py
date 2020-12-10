@@ -4,7 +4,7 @@ from time import sleep
 def get_temperature():
 	sense = SenseHat()
 	temp = sense.get_temperature()
-	# print(temp)
+	print(temp)
 	# if temp > 34:
 	# 	sense.clear(red)
 	# elif temp < 34 and temp > 24:
@@ -25,7 +25,7 @@ if __name__=="__main__":
 	
 	try:
 		while True:
-			temperature()
+			get_temperature()
 			sleep(5)
 	except KeyboardInterrupt:
 		sense.show_message("Bye")

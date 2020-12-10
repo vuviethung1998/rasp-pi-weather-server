@@ -82,7 +82,7 @@ def data_sender(config,debug=True):
 
 def get_data():
     dust = read()
-
+    #dust = 0
     temp = get_temperature()
     humid = get_humidity()
     # temp = 0
