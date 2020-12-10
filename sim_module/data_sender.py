@@ -28,13 +28,13 @@ def data_sender(data,config,debug=True):
     body_str = get_body_str(data)
     # init sim
     sim.power_on(config["POWER_KEY"])
-    sim.gps_start() # start gps
-    ok = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"])
+    ok = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
     if not ok:
         print('SIM AT init error')
         sys.exit(1)
     # Done init
     main_run = True
+    sim.gps_start() # start gps
     # loop
     try:
         while main_run:
