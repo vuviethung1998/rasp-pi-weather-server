@@ -1,10 +1,13 @@
+#!/usr/bin/env python
+
 import sys
+import sim
 import time
 import json
-from sensor_monitoring import humidity, temperature
+from sensor_monitoring.humidity import humidity
+from sensor_monitoring.temperature import temperature
 from sensor_monitoring.dust import set_up_GPIO, read
 from sense_hat import SenseHat
-from sim_module import sim
 
 from time import sleep
 
@@ -63,7 +66,7 @@ def data_sender(data,config,debug=True):
                 if debug: print('Error send data to Server')
 
     except KeyboardInterrupt:
-        main_run = False
+        # main_run = False
         sim.gps_stop()
         sim.at_close()
         sim.power_down(config["POWER_KEY"])
@@ -72,8 +75,8 @@ def send_data(conf):
     set_up_GPIO()
     while True:
         dust = read()
-        temp = temperature.temperature()
-        humid = humidity.humidity()
+        temp = temperature()
+        humid = humidity()
 
         data = {'dust_val': dust, 'temp_val': temp, 'humid_val': humid}
         data_sender(data=data, config=conf)
