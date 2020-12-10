@@ -1,0 +1,13 @@
+{
+  "bootstrap_servers" : "157.230.32.117:9093",
+  "group_id" : "enrich",
+  "offset": "latest",
+  "topic": "test-pi",
+  "kafka_rest_proxy": "157.230.32.117:8082",
+  "content_type": "application/vnd.kafka.json.v2+json",
+  "HTTP_CONNECT_TIMEOUT": 20,
+  "HTTP_RESPONSE_TIMEOUT": 5,
+  "SIM_SERIAL_PORT": "/dev/ttyUSB0",
+  "SIM_SERIAL_BAUD": 115200,
+  "POWER_KEY": 6
+}

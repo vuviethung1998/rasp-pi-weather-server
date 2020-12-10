@@ -5,11 +5,11 @@ from time import sleep
 import datetime
 
 def getConfig():
-    with open('./config.json') as config_file:
+    with open('../config/config.json') as config_file:
         config = json.load(config_file)
     return config
 
-def getTempHumid():
+def getTempHumidTime():
     temp = sense.get_temperature()
     humidity = sense.get_humidity()
     # ct stores current time
@@ -18,16 +18,7 @@ def getTempHumid():
     # ts store timestamp of current time
     ts = ct.timestamp()
 
-    data = {
-        "device_id": "default",
-        "type": "temp_humid",
-        "datetime": int(ts),
-        "data":
-            {"temp": temp,
-            "humidity": humidity
-        }
-    }
-    return data
+    return temp, humidity, ts
 
 
 if __name__=="__main__":
@@ -51,7 +42,7 @@ if __name__=="__main__":
 
     while True:
         try:
-            json_data = getTempHumid()
+            json_data = getTempHumidTime()
             kafka_producer.poll(0)
             kafka_producer.produce(config['topic'], json.dumps(json_data).encode('utf-8'))
             kafka_producer.flush()
