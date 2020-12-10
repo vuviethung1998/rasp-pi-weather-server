@@ -1,5 +1,5 @@
 import sys
-from sim_module import sim
+import sim
 import time
 import json
 from sensor_monitoring import humidity, temperature
@@ -62,7 +62,7 @@ def data_sender(data,config,debug=True):
                 if debug: print('Error send data to Server')
 
     except KeyboardInterrupt:
-        main_run = False
+        # main_run = False
         sim.gps_stop()
         sim.at_close()
         sim.power_down(config["POWER_KEY"])
