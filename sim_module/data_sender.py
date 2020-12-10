@@ -25,11 +25,14 @@ def get_body_str(data):
 def getURL(config):
     return  'http://' + config['kafka_rest_proxy'] + '/topics/' + config['topic']
 
-def data_sender(data,config,debug=True):
+def data_sender(config,debug=True):
     # init params
     URL = getURL(config)
     content_type = config['content_type']
-    body_str = get_body_str(data)
+
+    # init GPIO
+    set_up_GPIO()
+
     # init sim
     sim.power_on(config["POWER_KEY"])
     ok = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
@@ -40,8 +43,9 @@ def data_sender(data,config,debug=True):
     main_run = True
     sim.gps_start() # start gps
     # loop
-    try:
-        while main_run:
+
+    while main_run:
+        try:
             time.sleep(2)
             # Get Time
             time_sim = sim.time_get()
@@ -58,6 +62,9 @@ def data_sender(data,config,debug=True):
 
             time.sleep(2)
             # POST HTTP
+            # get data
+            data = get_data()
+            body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
                 print(body_str)
@@ -65,24 +72,24 @@ def data_sender(data,config,debug=True):
             if not ok:
                 if debug: print('Error send data to Server')
 
-    except KeyboardInterrupt:
-        # main_run = False
-        sim.gps_stop()
-        sim.at_close()
-        sim.power_down(config["POWER_KEY"])
+            sleep(5)
+        except KeyboardInterrupt:
+            main_run = False
+            sim.gps_stop()
+            sim.at_close()
+            sim.power_down(config["POWER_KEY"])
 
-def send_data(conf):
-    set_up_GPIO()
-    while True:
-        dust = read()
-        # temp = temperature.temperature()
-        # humid = humidity.humidity()
-        temp = 0
-        humid = 0
-        data = {'dust_val': dust, 'temp_val': temp, 'humid_val': humid}
-        data_sender(data=data, config=conf)
-        sleep(5)
+def get_data():
+    dust = read()
+    # temp = temperature.temperature()
+    # humid = humidity.humidity()
+    temp = 0
+    humid = 0
+    data = {'dust_val': dust, 'temp_val': temp, 'humid_val': humid}
+
+    return data
+
 
 if __name__=="__main__":
     config = getConfig()
-    send_data(config)
+    send_data(config,debug=True)
