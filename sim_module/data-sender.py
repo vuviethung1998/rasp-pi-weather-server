@@ -1,10 +1,11 @@
 import sys
-from sim_module import sim
 import time
 import json
 from sensor_monitoring import humidity, temperature
 from sensor_monitoring.dust import set_up_GPIO, read
 from sense_hat import SenseHat
+from sim_module import sim
+
 from time import sleep
 
 def getConfig():
