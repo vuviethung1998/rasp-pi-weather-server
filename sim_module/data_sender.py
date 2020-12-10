@@ -92,4 +92,4 @@ def get_data():
 
 if __name__=="__main__":
     config = getConfig()
-    send_data(config,debug=True)
+    data_sender(config,debug=True)
