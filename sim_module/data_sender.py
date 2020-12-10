@@ -71,9 +71,10 @@ def send_data(conf):
     set_up_GPIO()
     while True:
         dust = read()
-        temp = temperature.temperature()
-        humid = humidity.humidity()
-
+        # temp = temperature.temperature()
+        # humid = humidity.humidity()
+        temp = 0
+        humid = 0
         data = {'dust_val': dust, 'temp_val': temp, 'humid_val': humid}
         data_sender(data=data, config=conf)
         sleep(5)
