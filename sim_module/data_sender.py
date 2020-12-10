@@ -2,8 +2,8 @@ import sys
 from  sim_module import sim
 import time
 import json
-from sensor_monitoring.humidity import humidity
-from sensor_monitoring.temperature import temperature
+from sensor_monitoring.humidity import get_humidity
+from sensor_monitoring.temperature import get_temperature
 from sensor_monitoring.dust import set_up_GPIO, read
 from sense_hat import SenseHat
 from time import sleep
@@ -79,8 +79,8 @@ def data_sender(config,debug=True):
 
 def get_data():
     dust = read()
-    temp = temperature.temperature()
-    humid = humidity.humidity()
+    temp = get_temperature()
+    humid = get_humidity()
     # temp = 0
     # humid = 0
 
