@@ -1,4 +1,4 @@
-from sim_module.data_sender import getConfig, send_data
+from sim_module.data_sender import getConfig, data_sender
 import argparse
 
 if __name__=="__main__":
@@ -9,4 +9,4 @@ if __name__=="__main__":
     if args.debug:
         debug = True
     config = getConfig()
-    send_data(conf=config,debug=debug)
+    data_sender(conf=config,debug=debug)
