@@ -14,6 +14,7 @@ from time import sleep
 # 	sense.show_message(str(round(temp,2)))
 
 def humidity():
+	sense = SenseHat()
 	humidity = sense.get_humidity()
 	# print(humidity)
 	# if humidity > 40:
@@ -24,7 +25,7 @@ def humidity():
 	# 	sense.clear(red)
 	sleep(1)
 	# sense.show_message(str(round(humidity,2)))
-	return  humidity
+	return humidity
 
 
 if __name__=="__main__":

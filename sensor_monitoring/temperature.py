@@ -2,6 +2,7 @@ from sense_hat import SenseHat
 from time import sleep
 
 def temperature():
+	sense = SenseHat()
 	temp = sense.get_temperature()
 	# print(temp)
 	# if temp > 34:
