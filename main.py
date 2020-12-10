@@ -9,4 +9,4 @@ if __name__=="__main__":
     if args.debug:
         debug = True
     config = getConfig()
-    data_sender(conf=config,debug=debug)
+    data_sender(config=config,debug=debug)
