@@ -84,8 +84,8 @@ def get_data():
     dust = read()
     temp = temperature.temperature()
     humid = humidity.humidity()
-    # temp = 0
-    # humid = 0
+    #temp = 0
+    #humid = 0
 
     data = {'dust_val': dust, 'temp_val': temp, 'humid_val': humid}
 
