@@ -12,7 +12,7 @@ from sense_hat import SenseHat
 from time import sleep
 
 def getConfig():
-    with open('../config/config.json') as config_file:
+    with open('config/config.json') as config_file:
         config = json.load(config_file)
     return config
 
