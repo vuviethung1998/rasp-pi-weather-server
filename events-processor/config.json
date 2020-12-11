@@ -1,5 +1,8 @@
 {
     "bootstrap_servers" : "157.230.32.117:9093",
     "group_id" : "enrich",
-    "offset": "latest"
+    "offset": "latest",
+    "MONGODB_URI": "mongodb://admin:admin@localhost:27017",
+    "MONGODB_DATABASE":"SENSOR_DATABASE",
+    "CRAWLER_COLLECTION": "SENSOR_DATA_MONITORING"
 }
