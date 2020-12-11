@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  mongodb:
+    image: mongo:latest
+    container_name: mongodb
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: admin
+    ports:
+      - 27017:27017
+    networks:
+      - kafka_mongo
+    restart: unless-stopped
+  
+  kafka_mongo:
+    image: kafka_mongo:latest
+    container_name: kafka_mongo
+    networks:
+      - kafka_mongo
+    restart: unless-stopped  
+
+networks: 
+  kafka_mongo:
+    driver: bridge
