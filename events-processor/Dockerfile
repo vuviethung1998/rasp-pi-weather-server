@@ -2,10 +2,6 @@ FROM  python:3.6
 
 WORKDIR /usr/src/app
 
-RUN sed -i -e 's/v3\.4/edge/g' /etc/apk/repositories \
-    && apk upgrade --update-cache --available \
-    && apk --no-cache add librdkafka
-
 COPY requirements.txt ./
 
 RUN pip install --no-cache-dir -r requirements.txt
