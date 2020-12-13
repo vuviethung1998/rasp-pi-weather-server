@@ -1,6 +1,29 @@
 version: '3'
-
 services:
+  mongodb:
+    image: mongo:latest
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin
+      MONGO_INITDB_DATABASE: SENSOR_DATABASE
+    ports:
+      - 27017:27017
+    volumes:
+      - ../mongo/mongo-volume:/data/db
+      - ../mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    networks:
+      - mongo_net
+    restart: unless-stopped
+
+  kafka_mongo:
+    image: kafka_mongo:latest
+    container_name: kafka_mongo
+    networks:
+      - mongo_net
+    restart: unless-stopped
+
+networks:
+  mongo_net:
 #  zookeeper:
 #    image: confluentinc/cp-zookeeper
 #    environment:
@@ -59,21 +82,6 @@ services:
 #      KAFKA_REST_HOST_NAME: kafka-rest
 #      KAFKA_REST_LISTENERS: http://kafka-rest:8082
 #      KAFKA_REST_BOOTSTRAP_SERVERS: kafka:9092
-  mongodb:
-    image: mongo:latest
-    container_name: mongodb
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: admin
-      MONGO_INITDB_ROOT_PASSWORD: admin
-      MONGO_INITDB_DATABASE: admin
-    ports:
-      - 27017:27017
-    restart: unless-stopped
-
-  kafka_mongo:
-    image: kafka_mongo:latest
-    container_name: kafka_mongo
-    restart: unless-stopped
 
 #volumes:
 #  zk-logs: {}
