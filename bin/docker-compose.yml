@@ -1,4 +1,4 @@
-version: '3.7'
+version: '3'
 
 services:
   zookeeper:
@@ -45,7 +45,6 @@ services:
       SCHEMA_REGISTRY_HOST_NAME: schema-registry
       SCHEMA_REGISTRY_LISTENERS: http://schema-registry:8081
       SCHEMA_REGISTRY_DEBUG: "true"
-    restart: unless-stopped
 
   kafka-rest:
     image: confluentinc/cp-kafka-rest:4.1.1
@@ -60,7 +59,6 @@ services:
       KAFKA_REST_HOST_NAME: kafka-rest
       KAFKA_REST_LISTENERS: http://kafka-rest:8082
       KAFKA_REST_BOOTSTRAP_SERVERS: kafka:9092
-    restart: unless-stopped
 
   mongodb:
     image: mongo:latest
@@ -72,15 +70,16 @@ services:
     ports:
       - 27017:27017
     restart: unless-stopped
-  
+
   kafka_mongo:
     image: kafka_mongo:latest
     container_name: kafka_mongo
-    restart: unless-stopped  
+    restart: unless-stopped
 
 volumes:
-  es-volume:
   zk-logs: {}
   zk-data: {}
   kafka-data: {}
   secrets: {}
+
+
