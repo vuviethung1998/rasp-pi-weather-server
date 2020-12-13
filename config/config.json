@@ -1,5 +1,5 @@
 {
-  "bootstrap_servers" : "localhost:9092",
+  "bootstrap_servers" : "157.230.32.117:9093",
   "group_id" : "enrich",
   "offset": "latest",
   "topic": "test-pi",
