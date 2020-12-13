@@ -1,5 +1,5 @@
 {
-    "bootstrap_servers" : "157.230.32.117:9093",
+    "bootstrap_servers" : "0.0.0.0:9092",
     "group_id" : "enrich",
     "offset": "latest",
     "MONGODB_URI": "mongodb://admin:admin@mongodb:27017",
