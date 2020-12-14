@@ -11,19 +11,15 @@ services:
     volumes:
       - ../mongo/mongo-volume:/data/db
       - ../mongo/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
-    networks:
-      - mongo_net
+#    network_mode: host
     restart: unless-stopped
 
   kafka_mongo:
     image: kafka_mongo:latest
     container_name: kafka_mongo
-    networks:
-      - mongo_net
+    network_mode: host
     restart: unless-stopped
 
-networks:
-  mongo_net:
 #  zookeeper:
 #    image: confluentinc/cp-zookeeper
 #    environment:
