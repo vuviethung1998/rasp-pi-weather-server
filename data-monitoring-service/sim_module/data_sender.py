@@ -7,7 +7,6 @@ import json
 from sensor_monitoring.humidity import get_humidity
 from sensor_monitoring.temperature import get_temperature
 from sensor_monitoring.dust import set_up_GPIO, read
-from sense_hat import SenseHat
 
 from time import sleep
 
@@ -69,7 +68,7 @@ def data_sender(config,debug=True):
             if debug:
                 print('Send data to Server:' + URL)
                 print(body_str)
-            ok = sim.http_post(URL, content_type, body_str, '',config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
+            ok = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
             if not ok:
                 if debug: print('Error send data to Server')
 
