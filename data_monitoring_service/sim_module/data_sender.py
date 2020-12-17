@@ -1,10 +1,10 @@
 #!/usr/bin/env python
 
 import sys
-from  data_monitoring_service.sim_module import sim
+from  sim_module import sim
 import time
 import json
-from data_monitoring_service.sensor_monitoring import dht, wv20,ze12, ze15, ze25, zh03b
+from sensor_monitoring import dht, wv20,ze12, ze15, ze25, zh03b
 import board
 
 from time import sleep

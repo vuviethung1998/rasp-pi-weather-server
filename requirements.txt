@@ -1,7 +1,7 @@
 confluent_kafka
-snowplow_analytics_sdk
-sense-hat
-pillow-2.9.0
 chardet==3.0.2
-
-sudo apt-get install libssl-dev
+pillow==2.9.0
+chardet==3.0.2
+smbus
+adafruit-circuitpython-dht
+Adafruit-Blinka
