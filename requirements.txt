@@ -3,5 +3,8 @@ snowplow_analytics_sdk
 sense-hat
 pillow-2.9.0
 chardet==3.0.2
-
-sudo apt-get install libssl-dev
+smbus
+adafruit-circuitpython-dht
+board
+requests
+Adafruit-Blinka
