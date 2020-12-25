@@ -1,7 +1,4 @@
 confluent_kafka
-snowplow_analytics_sdk
-sense-hat
-pillow-2.9.0
 chardet==3.0.2
 smbus
 adafruit-circuitpython-dht

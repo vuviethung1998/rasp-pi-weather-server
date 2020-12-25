@@ -3,3 +3,4 @@ sense-hat==2.2.0
 RTIMULib==7.2.1
 RPi.GPIO==0.7.0
 smbus
+Adafruit-Blinka
