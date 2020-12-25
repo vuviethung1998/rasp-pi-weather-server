@@ -1,5 +1,4 @@
 # datasheet: https://docs.rs-online.com/2ecd/A700000007095397.pdf
-
 import sys
 import serial
 import time

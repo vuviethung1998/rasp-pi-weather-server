@@ -1,5 +1,4 @@
 # datasheet: https://www.winsen-sensor.com/d/files/PDF/Gas%20Sensor%20Module/Industrial%20Application%20Gas%20Sensor%20Module/ze12-electrochemical-module-manualv1_5.pdf
-
 import sys
 import serial
 import time

@@ -49,5 +49,8 @@ if __name__=="__main__":
         # do whatever you need
         print(err)
 
+    # curl -X POST -d {{"records": [{ "key": "sensor_device","value": "{'pm2_5_val': 0, 'temp_val': 0, 'humid_val': 0}" }]}} -H "Content-Type: application/vnd.kafka.json.v2+json" http://157.230.32.117:8082/topics/test-pi
+
+
 
 

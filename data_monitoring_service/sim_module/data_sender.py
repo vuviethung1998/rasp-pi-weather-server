@@ -102,13 +102,13 @@ def data_sender(config,debug=True):
             ok = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
             if not ok:
                 if debug: print('Error send data to Server')
-
             sleep(5)
         except KeyboardInterrupt:
             main_run = False
             sim.gps_stop()
             sim.at_close()
             sim.power_down(config["POWER_KEY"])
+
 
 
 if __name__=="__main__":
