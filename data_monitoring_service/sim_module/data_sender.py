@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-from  sim_module import sim
+from sim_module import sim
 import time
 import json
 from sensor_monitoring import dht, wv20,ze12, ze15, ze25, zh03b
@@ -30,7 +30,30 @@ def data_sender(config,debug=True):
     content_type = config['content_type']
 
     # init sensor
-    initSensor()
+    # CO2 = wv20.sensor()
+    # SO2 = ze12.sensor()
+    # CO = ze15.sensor()
+    # O3 = ze25.sensor()
+    PM2_5 = zh03b.sensor()
+    DHT = dht.sensor()
+
+    DHT_PIN = board.D18
+    PORT_PM2_5 = '/dev/ttyAMA0'
+    # PORT_SO2 = '/dev/ttyAMA1'
+    # PORT_CO2 = '/dev/ttyAMA2'
+    # PORT_CO = '/dev/ttyAMA3'
+    # PORT_O3 = '/dev/ttyAMA4'
+    SensorReadMode = 1
+
+    ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+    if not ok_pm25:
+        print('init PM2.5 error')
+        sys.exit(-1)
+
+    ok_dht = DHT.initSensor(DHT_PIN)
+    if not ok_dht:
+        print('init DHT error')
+        sys.exit(-1)
 
     # init sim
     sim.power_on(config["POWER_KEY"])
@@ -62,7 +85,16 @@ def data_sender(config,debug=True):
             time.sleep(2)
             # POST HTTP
             # get data
-            data = get_data()
+            pm2_5, ok_pm25 = PM2_5.getSensor()
+            temp, humid, ok_dht = DHT.getSensor()
+
+            if not ok_pm25:
+                if debug: print('Error read sensor: PM2.5')
+            if not ok_dht:
+                if debug: print('Error read sensor: DHT')
+
+
+            data = {'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid}
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
@@ -77,46 +109,6 @@ def data_sender(config,debug=True):
             sim.gps_stop()
             sim.at_close()
             sim.power_down(config["POWER_KEY"])
-
-def get_data(debug=True):
-    pm2_5, ok_pm25 = PM2_5.getSensor()
-    temp, humid, ok_dht = DHT.getSensor()
-
-    if not ok_pm25:
-        if debug: print('Error read sensor: PM2.5')
-    if not ok_dht:
-        if debug: print('Error read sensor: DHT')
-
-
-    data = {'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid}
-
-    return data
-
-def initSensor():
-    # CO2 = wv20.sensor()
-    # SO2 = ze12.sensor()
-    # CO = ze15.sensor()
-    # O3 = ze25.sensor()
-    PM2_5 = zh03b.sensor()
-    DHT = dht.sensor()
-
-    DHT_PIN = board.D18
-    PORT_PM2_5 = '/dev/ttyAMA0'
-    # PORT_SO2 = '/dev/ttyAMA1'
-    # PORT_CO2 = '/dev/ttyAMA2'
-    # PORT_CO = '/dev/ttyAMA3'
-    # PORT_O3 = '/dev/ttyAMA4'
-    SensorReadMode = 1
-
-    ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-    if not ok_pm25:
-        print('init PM2.5 error')
-        sys.exit(-1)
-
-    ok_dht = DHT.initSensor(DHT_PIN)
-    if not ok_dht:
-        print('init DHT error')
-        sys.exit(-1)
 
 
 if __name__=="__main__":

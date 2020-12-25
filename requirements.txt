@@ -1,7 +1,7 @@
 confluent_kafka
 chardet==3.0.2
-pillow==2.9.0
-chardet==3.0.2
 smbus
 adafruit-circuitpython-dht
+board
+requests
 Adafruit-Blinka
