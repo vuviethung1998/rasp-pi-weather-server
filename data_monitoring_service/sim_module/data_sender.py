@@ -6,7 +6,7 @@ import time
 import json
 from sensor_monitoring import dht, wv20,ze12, ze15, ze25, zh03b, INA219 as battery
 import board
-
+from datetime import datetime
 from time import sleep
 
 def getConfig():
@@ -89,6 +89,7 @@ def data_sender(config,debug=True):
             time.sleep(2)
             # POST HTTP
             # get data
+            cur_time =  datetime.now().strftime("%H:%M:%S")
             pm2_5, ok_pm25 = PM2_5.getSensor()
             temp, humid, ok_dht = DHT.getSensor()
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
@@ -98,7 +99,7 @@ def data_sender(config,debug=True):
             if not ok_dht:
                 if debug: print('Error read sensor: DHT')
 
-            data = {'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
+            data = {'time': cur_time,'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
