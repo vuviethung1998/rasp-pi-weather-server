@@ -99,7 +99,7 @@ def data_sender(config,debug=True):
             if not ok_dht:
                 if debug: print('Error read sensor: DHT')
 
-            data = {'time': cur_time,'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
+            data = {'time': cur_time, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
@@ -107,8 +107,7 @@ def data_sender(config,debug=True):
             ok = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
             if not ok:
                 if debug: print('Error send data to Server')
-            sleep(5)
-
+            sleep(config['sleep_time'])
 
         except KeyboardInterrupt:
             main_run = False
