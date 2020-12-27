@@ -99,7 +99,7 @@ def data_sender(config,debug=True):
             if not ok_dht:
                 if debug: print('Error read sensor: DHT')
 
-            data = {'time': cur_time, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
+            data = {'sleep_time': config['sleep_time'] + 6,'time': cur_time, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
