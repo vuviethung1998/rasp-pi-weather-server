@@ -56,6 +56,7 @@ def _at_send(command,back,timeout, step_check = 0.01):
     rec_buff = ''
     if len(command):
         ser.flushInput()
+        if debug: print(command)
         ser.write((command+'\r\n').encode())
 
     i = 0
@@ -79,6 +80,16 @@ def _at_send(command,back,timeout, step_check = 0.01):
         return '', False
 
 def _check_service():
+    # Check AT
+    _, ok = _at_send('AT','OK', 1)
+    if not ok:
+        return False
+
+    # Echo mode off
+    _, ok = _at_send('ATE0','OK', 1)
+    if not ok:
+        return False
+
     # SIM Card Status
     _, ok = _at_send('AT+CPIN?','READY', 1)
     if not ok:
@@ -203,13 +214,16 @@ def gps_start():
 def gps_get_data():
     r, ok = _at_send('AT+CGPSINFO', 'OK', 1)
     if not ok or r == '':
-        _at_send('AT+CGPS=0', '+CGPS:0', 1)
         return "", False
     if ',,,' in r:
-        _at_send('AT+CGPS=0', '+CGPS:0', 1)
         return "", False
-    data = r.splitlines()[2]
-    data = data.split(" ")[1]
+
+        # get GPS data from response
+    try:
+        data = r.splitlines()[1]
+        data = data.split(" ")[1]
+    except:
+        return "", False
 
     return data, True
 
