@@ -69,6 +69,11 @@ def data_sender(config,debug=True):
     main_run = True
     sim.gps_start() # start gps
 
+    # wait till gps get data
+    while True:
+        gps, ok = sim.gps_get_data()
+        if ok is True:
+            break
     # loop
     while main_run:
         try:
