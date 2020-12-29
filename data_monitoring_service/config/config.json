@@ -10,5 +10,5 @@
   "SIM_SERIAL_PORT": "/dev/ttyUSB0",
   "SIM_SERIAL_BAUD": 115200,
   "POWER_KEY": 6,
-  "sleep_time": 30
+  "sleep_time": 50
 }
