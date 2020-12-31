@@ -39,10 +39,13 @@ if __name__=="__main__":
                     event = dict(json.loads(msg.value().decode('utf-8')))
                     # check if field createdAt exists
                     # if exist then convert to Date type
-                    if 'createdAt' in event.keys():
-                        createdAt = event['createdAt'].split('.')[0]
+                    if 'createdAt' in event.keys() and 'time' in event.keys() and 'date' in event.keys():
+                        createdAt = event['createdAt']
+                        date = event['date']
+                        time = event['time']
                         event['createdAt'] = datetime.strptime(createdAt, '%H:%M:%S %m-%d-%Y')
-
+                        event['date'] = datetime.strptime(date, '%m-%d-%Y')
+                        event['time'] = datetime.strptime(time, '%H:%M:%S')
                         collection.insert_one(event)
                 except TypeError as e:
                     print(e)
