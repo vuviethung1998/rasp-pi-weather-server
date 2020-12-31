@@ -139,6 +139,7 @@ def data_sender(config,debug=True):
                 else:
                     state_pm25 = True
                 state_data = reTryUntilGetData(timelimit=time_limit_pm25, device_ok=state_pm25) # check data passed
+
                 if state_data:
                     break
 
