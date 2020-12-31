@@ -46,6 +46,9 @@ if __name__=="__main__":
                         collection.insert_one(event)
                 except TypeError as e:
                     print(e)
+                except ValueError as e:
+                    print(e)
+
                 msg_count += 1
                 if msg_count % config['MIN_COMMIT_COUNT'] == 0:
                     kafka_consumer.commit()
