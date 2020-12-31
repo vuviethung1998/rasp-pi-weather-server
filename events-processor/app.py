@@ -1,7 +1,7 @@
 from confluent_kafka import Consumer, KafkaError
 import json
 from pymongo import MongoClient, errors
-
+from datetime import datetime
 def getConfig():
     with open('./config.json') as config_file:
         config = json.load(config_file)
@@ -37,7 +37,12 @@ if __name__=="__main__":
                         break
                 try:
                     event = dict(json.loads(msg.value().decode('utf-8')))
-                    collection.insert_one(event)
+                    # check if field createdAt exists
+                    # if exist then convert to Date type
+                    if 'createdAt' in event.keys():
+                        createdAt = event['createdAt']
+                        event['createdAt'] = datetime.strptime(createdAt, '%Y-%m-%d %H:%M:%S')
+                        collection.insert_one(event)
                 except TypeError as e:
                     print(e)
                 msg_count += 1
