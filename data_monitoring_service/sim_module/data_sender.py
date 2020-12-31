@@ -103,7 +103,10 @@ def data_sender(config,debug=True):
             time_limit_gps = time.time() + 10   #  from now
             while True:
                 gps, _ = sim.gps_get_data()
-                state_gps = True if gps != '' else False
+                if gps == '' or gps is None:
+                    state_gps = False
+                else:
+                    state_gps =  True
                 state_data = reTryUntilGetData(timelimit=time_limit_gps, device_ok=state_gps) # check data passed
                 if state_data:
                     break
@@ -119,7 +122,7 @@ def data_sender(config,debug=True):
             time_limit_dht = time.time() + 10   #  from now
             while True:
                 temp, humid, _ = DHT.getSensor()
-                if temp == 0 or humid == 0:
+                if temp == 0 or humid == 0 or temp is None or humid is None:
                     state_dht = False
                 else:
                     state_dht =  True
@@ -131,7 +134,10 @@ def data_sender(config,debug=True):
             time_limit_pm25 = time.time() + 10   #  from now
             while True:
                 pm2_5, _ = PM2_5.getSensor()
-                state_pm25 = True if gps != 0 else False
+                if pm2_5 == 0 or pm2_5 is None:
+                    state_pm25 = False
+                else:
+                    state_pm25 = True
                 state_data = reTryUntilGetData(timelimit=time_limit_pm25, device_ok=state_pm25) # check data passed
                 if state_data:
                     break
