@@ -24,11 +24,30 @@ def get_body_str(data):
 def getURL(config):
     return  'http://' + config['kafka_rest_proxy'] + '/topics/' + config['topic']
 
+def initState():
+    state = {}
+    state['dht'] = False
+    state['pm25'] = False
+    state['gps'] = False
+    state['sim'] = False
+    return state
+
+def checkAllSensorSucceed(state):
+    if state['dht'] != True or state['pm25'] != True or state['gps'] != True  or state['sim'] != True:
+        return False
+    return True
+
+# if time exceeds timelimit or device result passed, return True
+def reTryUntilGetData(timelimit, device_ok):
+    if device_ok or time.time() > timelimit:
+        return True
+    return False
+
+# send data to server
 def data_sender(config,debug=True):
     # init params
     URL = getURL(config)
     content_type = config['content_type']
-
 
     # Init Battery
     Battery = battery.INA219(addr=0x42)
@@ -49,78 +68,85 @@ def data_sender(config,debug=True):
     # PORT_O3 = '/dev/ttyAMA4'
     SensorReadMode = 1
 
+    # init state of devices
+    state = initState()
+    # init sensor
     ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-    if not ok_pm25:
-        print('init PM2.5 error')
-        sys.exit(-1)
-
-    ok_dht = DHT.initSensor(DHT_PIN)
-    if not ok_dht:
-        print('init DHT error')
-        sys.exit(-1)
-
+    ok_dht= DHT.initSensor(DHT_PIN)
     # init sim
     sim.power_on(config["POWER_KEY"])
-    ok = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
-    if not ok:
-        print('SIM AT init error')
-        sys.exit(1)
+    ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+    # init gps
+    sim.gps_start() # start gps
+    gps, ok_gps = sim.gps_get_data()
+
+    # define state
+    state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
+
+    # loop until all devices are on
+    while not checkAllSensorSucceed(state):
+        ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+        ok_dht= DHT.initSensor(DHT_PIN)
+        ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+        _, ok_gps = sim.gps_get_data()
+        state['dht'], state['pm25'], state['sim'], state['gps'] = ok_dht, ok_pm25, ok_sim, ok_gps
+        print('All devices are on.')
+
     # Done init
     main_run = True
-    sim.gps_start() # start gps
 
-    # wait till gps get data
-    while True:
-        gps, ok = sim.gps_get_data()
-        print(ok)
-        if ok:
-            break
     # loop
     while main_run:
         try:
-            time.sleep(2)
-            # Get Time
-            time_sim = sim.time_get()
-            if time_sim != '':
-                if debug: print('Time:' + time_sim)
+            # time_sim = sim.time_get()
+            # Get GPS data
+            time_limit_gps = time.time() + 10   #  from now
+            while True:
+                gps, _ = sim.gps_get_data()
+                state_gps = True if gps != '' else False
+                state_data = reTryUntilGetData(timelimit=time_limit_gps, device_ok=state_gps) # check data passed
+                if state_data:
+                    break
+            lst_str = gps.split(',') # split GPS string2
+            lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
 
-            time.sleep(2)
-            # Get GPS
-            gps, ok = sim.gps_get_data()
-            lat, ns, lon, ew, _, _, altitude, speed, _ =  ' ' ,  ' ', ' ', ' ', ' ', ' ',  ' ', ' ', ' ' 
-            if ok:
-                if debug: print('GPS:' + gps)
-                lst_str = gps.split(',')
-                lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
-            else:
-                if debug: print('GPS not ready')
-            
-            #print(lat + ' ' + lon + ' ' + ns + ' ' + se + ' ' + date + ' ' + tme  + ' ' + altitude + ' ' + speed   )
-            time.sleep(2)
-            # POST HTTP
-            # get data
+            # Get time data
             cur_time =  datetime.now().strftime("%H:%M:%S")
             cur_date =  datetime.now().strftime("%m-%d-%Y")
             created_at = datetime.now()
 
-            pm2_5, ok_pm25 = PM2_5.getSensor()
-            temp, humid, ok_dht = DHT.getSensor()
+            # Get temp humid
+            time_limit_dht = time.time() + 10   #  from now
+            while True:
+                temp, humid, _ = DHT.getSensor()
+                if temp == 0 or humid == 0:
+                    state_dht = False
+                else:
+                    state_dht =  True
+                state_data = reTryUntilGetData(timelimit=time_limit_dht, device_ok=state_dht) # check data passed
+                if state_data:
+                    break
 
+            # Get PM2.5 data
+            time_limit_pm25 = time.time() + 10   #  from now
+            while True:
+                pm2_5, _ = PM2_5.getSensor()
+                state_pm25 = True if gps != 0 else False
+                state_data = reTryUntilGetData(timelimit=time_limit_pm25, device_ok=state_pm25) # check data passed
+                if state_data:
+                    break
+
+            # Get battery data
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
 
-            if not ok_pm25:
-                if debug: print('Error read sensor: PM2.5')
-            if not ok_dht:
-                if debug: print('Error read sensor: DHT')
-
-            
+            # get data
             data = {'sleep_time': config['sleep_time'] + 6, 'createdAt': created_at, 'date': cur_date, 'time': cur_time, 'lat':lat, 'lon':lon, 'ns':ns, 'ew': ew, 'altitude': altitude, 'speed': speed, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent }
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
                 print(body_str)
-            ok = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
-            if not ok:
+            ok_post = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
+            if not ok_post:
                 if debug: print('Error send data to Server')
             sleep(config['sleep_time'])
 
