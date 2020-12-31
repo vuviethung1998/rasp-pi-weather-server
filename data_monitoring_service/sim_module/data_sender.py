@@ -16,8 +16,8 @@ def getConfig():
 
 def get_body_str(data):
     body = {"records": [{ "key": "sensor_device","value":data}]}
-    body_str = json.dumps(body)
-
+    body_str = json.dumps(body,indent=4, sort_keys=True, default=str) # if not serialisable, default stringify
+    
     return  body_str
 
 # get kafka rest proxy url
@@ -71,9 +71,9 @@ def data_sender(config,debug=True):
 
     # wait till gps get data
     while True:
-
         gps, ok = sim.gps_get_data()
-        if ok is True:
+        print(ok)
+        if ok:
             break
     # loop
     while main_run:
@@ -87,17 +87,25 @@ def data_sender(config,debug=True):
             time.sleep(2)
             # Get GPS
             gps, ok = sim.gps_get_data()
+            lat, ns, lon, ew, _, _, altitude, speed, _ =  ' ' ,  ' ', ' ', ' ', ' ', ' ',  ' ', ' ', ' ' 
             if ok:
                 if debug: print('GPS:' + gps)
+                lst_str = gps.split(',')
+                lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
             else:
                 if debug: print('GPS not ready')
-
+            
+            #print(lat + ' ' + lon + ' ' + ns + ' ' + se + ' ' + date + ' ' + tme  + ' ' + altitude + ' ' + speed   )
             time.sleep(2)
             # POST HTTP
             # get data
             cur_time =  datetime.now().strftime("%H:%M:%S")
+            cur_date =  datetime.now().strftime("%m-%d-%Y")
+            created_at = datetime.now()
+
             pm2_5, ok_pm25 = PM2_5.getSensor()
             temp, humid, ok_dht = DHT.getSensor()
+
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
 
             if not ok_pm25:
@@ -105,7 +113,8 @@ def data_sender(config,debug=True):
             if not ok_dht:
                 if debug: print('Error read sensor: DHT')
 
-            data = {'sleep_time': config['sleep_time'] + 6,'time': cur_time, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent}
+            
+            data = {'sleep_time': config['sleep_time'] + 6, 'createdAt': created_at, 'date': cur_date, 'time': cur_time, 'lat':lat, 'lon':lon, 'ns':ns, 'ew': ew, 'altitude': altitude, 'speed': speed, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent }
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
