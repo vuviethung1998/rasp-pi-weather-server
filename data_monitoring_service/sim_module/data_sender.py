@@ -116,7 +116,7 @@ def data_sender(config,debug=True):
             # Get time data
             cur_time =  datetime.now().strftime("%H:%M:%S")
             cur_date =  datetime.now().strftime("%m-%d-%Y")
-            created_at = datetime.now()
+            created_at = datetime.now().strftime("%H:%M:%S %m-%d-%Y")
 
             # Get temp humid
             time_limit_dht = time.time() + 10   #  from now
