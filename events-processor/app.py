@@ -40,7 +40,7 @@ if __name__=="__main__":
                     # check if field createdAt exists
                     # if exist then convert to Date type
                     if 'createdAt' in event.keys():
-                        createdAt = event['createdAt']
+                        createdAt = event['createdAt'].split('.')[0]
                         event['createdAt'] = datetime.strptime(createdAt, '%Y-%m-%d %H:%M:%S')
                         collection.insert_one(event)
                 except TypeError as e:
