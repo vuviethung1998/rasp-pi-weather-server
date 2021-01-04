@@ -52,6 +52,27 @@ def reTryUntilGetGPSData(config, debug, timelimit, device_ok):
         return False
     return False
 
+# if time exceeds, restart pm25 device 
+def reTryUntilGetDHTData(DHT_PIN, timelimit, device_ok):
+    if device_ok:
+        return True
+    elif not device_ok and time.time() > timelimit:
+        DHT = dht.sensor()
+        ok_dht= DHT.initSensor(DHT_PIN)
+        return False
+    return False
+
+# if time exceeds, restart pm25 device 
+def reTryUntilGetPM25Data(PORT_PM2_5, SensorReadMode, timelimit, device_ok):
+    if device_ok:
+        return True
+    elif not device_ok and time.time() > timelimit:
+        PM2_5 = zh03b.sensor()
+        ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+        print(ok_pm25)
+        return False
+    return False
+
 # if time exceeds time limit then restart device
 def restartSim(config, debug):
     stopSim(config)
@@ -116,6 +137,7 @@ def data_sender(config,debug=True):
     time_limit_all_devices = time.time() + 2 * 60   # 120s from now
     while not checkAllSensorSucceed(state):
         ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+        print(ok_pm25)
         ok_dht= DHT.initSensor(DHT_PIN)
         ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
         _, ok_gps = sim.gps_get_data()
@@ -123,7 +145,7 @@ def data_sender(config,debug=True):
 
         if not checkAllSensorSucceed(state) and time.time() > time_limit_all_devices: 
             restartSim(config, debug)
-            time_limit_all_devices  = time.time() + 2 * 60         
+            time_limit_all_devices  = time.time() + 2 * 60
     print('All devices are on.')
 
     # Done init
@@ -153,29 +175,31 @@ def data_sender(config,debug=True):
             created_at = datetime.now().strftime("%H:%M:%S %m-%d-%Y")
 
             # Get temp humid
-            time_limit_dht = time.time() + 10   #  from now
+            time_limit_dht = time.time() + 60   #  from now
             while True:
                 temp, humid, _ = DHT.getSensor()
                 if temp == 0 or humid == 0 or temp is None or humid is None:
                     state_dht = False
                 else:
                     state_dht =  True
-                state_data = reTryUntilGetData(timelimit=time_limit_dht, device_ok=state_dht) # check data passed
+                #state_data = reTryUntilGetDHTData(DHT_PIN, time_limit_dht, state_dht) # check data passed
+                state_data = reTryUntilGetData(time_limit_dht, state_dht)
                 if state_data:
                     break
 
             # Get PM2.5 data
-            time_limit_pm25 = time.time() + 10   #  from now
+            time_limit_pm25 = time.time() + 60   #  from now
             while True:
                 pm2_5, _ = PM2_5.getSensor()
                 if pm2_5 == 0 or pm2_5 is None:
                     state_pm25 = False
                 else:
                     state_pm25 = True
-                state_data = reTryUntilGetData(timelimit=time_limit_pm25, device_ok=state_pm25) # check data passed
-
+                #state_data = reTryUntilGetPM25Data(PORT_PM2_5, SensorReadMode, time_limit_pm25, state_pm25)  # check data passed
+                state_data = reTryUntilGetData(time_limit_pm25, state_pm25)
                 if state_data:
                     break
+            pm2_5, _ = PM2_5.getSensor()
 
             # Get battery data
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
