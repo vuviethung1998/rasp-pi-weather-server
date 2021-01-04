@@ -54,8 +54,9 @@ def reTryUntilGetGPSData(config, debug, timelimit, device_ok):
 
 # if time exceeds time limit then restart device
 def restartSim(config, debug):
-    startSim(config, debug)
     stopSim(config)
+    startSim(config, debug)
+    
     
 def startSim(config, debug):
     sim.power_on(config["POWER_KEY"])
