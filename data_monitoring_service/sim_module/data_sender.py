@@ -43,6 +43,22 @@ def reTryUntilGetData(timelimit, device_ok):
         return True
     return False
 
+# if time exceeds time limit then restart device
+def restartSim(config, debug):
+    startSim(config, debug)
+    stopSim(config)
+    
+def startSim(config, debug):
+    sim.power_on(config["POWER_KEY"])
+    ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+    sim.gps_start() # start gps
+    
+
+def stopSim(config):
+    sim.gps_stop()
+    sim.at_close()
+    sim.power_down(config["POWER_KEY"])
+
 # send data to server
 def data_sender(config,debug=True):
     # init params
@@ -71,25 +87,33 @@ def data_sender(config,debug=True):
     # init state of devices
     state = initState()
     # init sensor
-    ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-    ok_dht= DHT.initSensor(DHT_PIN)
+    #ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+    #ok_dht= DHT.initSensor(DHT_PIN)
     # init sim
-    sim.power_on(config["POWER_KEY"])
-    ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+    #sim.power_on(config["POWER_KEY"])
+    #ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
     # init gps
-    sim.gps_start() # start gps
-    gps, ok_gps = sim.gps_get_data()
+    #sim.gps_start() # start gps
+    #gps, ok_gps = sim.gps_get_data()
+    
+    # init sim
+    startSim(config,debug)
 
     # define state
-    state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
+    #state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
 
-    # loop until all devices are oN
+    # if device cannot start within limit range then restart sim 
+    time_limit_all_devices = time.time() + 2 * 60   # 120s from now
     while not checkAllSensorSucceed(state):
         ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
         ok_dht= DHT.initSensor(DHT_PIN)
         ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
         _, ok_gps = sim.gps_get_data()
         state['dht'], state['pm25'], state['sim'], state['gps'] = ok_dht, ok_pm25, ok_sim, ok_gps
+
+        if not checkAllSensorSucceed(state) and time.time() > time_limit_all_devices: 
+            restartSim(config, debug)
+            time_limit_all_devices  = time.time() + 2 * 60         
     print('All devices are on.')
 
     # Done init
@@ -159,9 +183,7 @@ def data_sender(config,debug=True):
 
         except KeyboardInterrupt:
             main_run = False
-            sim.gps_stop()
-            sim.at_close()
-            sim.power_down(config["POWER_KEY"])
+            stopSim(config)
 
 
 
