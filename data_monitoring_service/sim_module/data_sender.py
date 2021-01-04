@@ -83,14 +83,14 @@ def data_sender(config,debug=True):
     # define state
     state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
 
-    # loop until all devices are on
+    # loop until all devices are oN
     while not checkAllSensorSucceed(state):
         ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
         ok_dht= DHT.initSensor(DHT_PIN)
         ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
         _, ok_gps = sim.gps_get_data()
         state['dht'], state['pm25'], state['sim'], state['gps'] = ok_dht, ok_pm25, ok_sim, ok_gps
-        print('All devices are on.')
+    print('All devices are on.')
 
     # Done init
     main_run = True
