@@ -43,6 +43,15 @@ def reTryUntilGetData(timelimit, device_ok):
         return True
     return False
 
+# if time exceeds timelimit, restart sim
+def reTryUntilGetGPSData(timelimit, device_ok, config, debug):
+    if device_ok:
+        return True
+    elif not device_ok and time.time() > timelimit:
+        restartSim(config, debug)
+        return False
+    return False
+
 # if time exceeds time limit then restart device
 def restartSim(config, debug):
     startSim(config, debug)
@@ -131,7 +140,7 @@ def data_sender(config,debug=True):
                     state_gps = False
                 else:
                     state_gps =  True
-                state_data = reTryUntilGetData(timelimit=time_limit_gps, device_ok=state_gps) # check data passed
+                state_data = reTryUntilGetGPSData(timelimit=time_limit_gps, device_ok=state_gps, config, debug) # check data passed
                 if state_data:
                     break
             lst_str = gps.split(',') # split GPS string2
