@@ -108,7 +108,7 @@ def data_sender(config,debug=True):
     DHT = dht.sensor()
 
     DHT_PIN = board.D18
-    PORT_PM2_5 = '/dev/ttyAMA0'
+    PORT_PM2_5 = '/dev/ttyAMA1'
     # PORT_SO2 = '/dev/ttyAMA1'
     # PORT_CO2 = '/dev/ttyAMA2'
     # PORT_CO = '/dev/ttyAMA3'
@@ -134,7 +134,7 @@ def data_sender(config,debug=True):
     #state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
 
     # if device cannot start within limit range then restart sim 
-    time_limit_all_devices = time.time() + 2 * 60   # 120s from now
+    time_limit_all_devices = time.time() + 3 * 60   # 180s from now
     while not checkAllSensorSucceed(state):
         ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
         print(ok_pm25)
@@ -145,7 +145,7 @@ def data_sender(config,debug=True):
 
         if not checkAllSensorSucceed(state) and time.time() > time_limit_all_devices: 
             restartSim(config, debug)
-            time_limit_all_devices  = time.time() + 2 * 60
+            time_limit_all_devices  = time.time() + 3 * 60
     print('All devices are on.')
 
     # Done init
@@ -205,7 +205,7 @@ def data_sender(config,debug=True):
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
 
             # get data
-            data = {'sleep_time': config['sleep_time'] + 6, 'createdAt': created_at, 'date': cur_date, 'time': cur_time, 'lat':lat, 'lon':lon, 'ns':ns, 'ew': ew, 'altitude': altitude, 'speed': speed, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent }
+            data = {'sleep_time': config['sleep_time'], 'createdAt': created_at, 'date': cur_date, 'time': cur_time, 'lat':lat, 'lon':lon, 'ns':ns, 'ew': ew, 'altitude': altitude, 'speed': speed, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent }
             body_str = get_body_str(data)
             if debug:
                 print('Send data to Server:' + URL)
