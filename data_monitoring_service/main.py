@@ -8,5 +8,5 @@ if __name__=="__main__":
     args = parser.parse_args()
     if args.debug:
         debug = True
-    config = getConfig()
+    config = getConfig('./config/config.json')
     data_sender(config=config,debug=debug)

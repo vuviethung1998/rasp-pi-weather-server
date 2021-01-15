@@ -1,9 +1,9 @@
 {
-  "bootstrap_servers" : "13.76.92.230:9093",
+  "bootstrap_servers" : "54.150.126.18:9093",
   "group_id" : "enrich",
   "offset": "latest",
   "topic": "test-pi",
-  "kafka_rest_proxy": "13.76.92.230:8082",
+  "kafka_rest_proxy": "54.150.126.18:8082",
   "content_type": "application/vnd.kafka.json.v2+json",
   "HTTP_CONNECT_TIMEOUT": 20,
   "HTTP_RESPONSE_TIMEOUT": 5,

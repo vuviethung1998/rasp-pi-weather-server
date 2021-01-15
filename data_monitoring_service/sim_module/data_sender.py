@@ -9,8 +9,8 @@ import board
 from datetime import datetime
 from time import sleep
 
-def getConfig():
-    with open('config/config.json') as config_file:
+def getConfig(confile):
+    with open(confile) as config_file:
         config = json.load(config_file)
     return config
 
@@ -134,7 +134,7 @@ def data_sender(config,debug=True):
     #state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
 
     # if device cannot start within limit range then restart sim 
-    time_limit_all_devices = time.time() + 3 * 60   # 180s from now
+    time_limit_all_devices = time.time() + 10 * 60   # 180s from now
     while not checkAllSensorSucceed(state):
         ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
         print(ok_pm25)
@@ -145,7 +145,7 @@ def data_sender(config,debug=True):
 
         if not checkAllSensorSucceed(state) and time.time() > time_limit_all_devices: 
             restartSim(config, debug)
-            time_limit_all_devices  = time.time() + 3 * 60
+            time_limit_all_devices  = time.time() + 10 * 60
     print('All devices are on.')
 
     # Done init
