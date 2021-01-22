@@ -112,7 +112,7 @@ def data_sender(config,debug=True):
             print(type(temp))
             time_limit_dht = time.time() + 60  #  from now
 
-            while not ok_dht or temp =='0' or humid == '0':
+            while not ok_dht or temp == 0 or humid == 0:
                 temp, humid, ok_dht = DHT.getSensor()
                 if time.time() > time_limit_dht:
                     DHT = dht.sensor()
@@ -122,7 +122,7 @@ def data_sender(config,debug=True):
             # Get PM2.5 data
             pm2_5, ok_pm25 = PM2_5.getSensor()
             time_limit_pm25 = time.time() + 60   #  from now
-            while not ok_pm25 or pm2_5 == '0':
+            while not ok_pm25 or pm2_5 == 0:
                 pm2_5, ok_pm25 = PM2_5.getSensor()
                 if time.time() > time_limit_pm25:
                     PM2_5 = zh03b.sensor()
