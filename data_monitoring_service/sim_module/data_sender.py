@@ -150,6 +150,15 @@ def data_sender(config,debug=True):
     #     #     time_limit_all_devices  = time.time() + 10 * 60
     # print('All devices are on.')
 
+    # Wait till turn gps on, if over 10mins move on 
+    time_limit = time.time() + 10 * 60
+    while not ok_gps:
+        _, ok_gps = sim.gps_get_data()
+
+        if time.time() > time_limit:
+            break
+    print('All devices are on.')
+
     # Done init
     main_run = True
 
