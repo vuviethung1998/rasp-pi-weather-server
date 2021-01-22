@@ -130,7 +130,7 @@ class sensor:
 # ---------------------------------------------------------------
 if __name__ == "__main__":
     sensor = sensor()
-    if not sensor.initSensor('/dev/ttyAMA0', 1):
+    if not sensor.initSensor('/dev/ttyAMA1', 1):
         sys.exit(-1)
 
     main_is_run = True
