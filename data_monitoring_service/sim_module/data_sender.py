@@ -120,11 +120,11 @@ def data_sender(config,debug=True):
 
             time_limit_pm25 = time.time() + 60   #  from now
             while not ok_pm25:
-                pm2_5, ok_pm25 = DHT.getSensor()
+                pm2_5, ok_pm25 = PM2_5.getSensor()
                 if time.time() > time_limit_pm25:
                     PM2_5 = zh03b.sensor()
                     ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-            pm2_5, ok_pm25 = DHT.getSensor()
+            pm2_5, ok_pm25 = PM2_5.getSensor()
 
             # Get battery data
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
