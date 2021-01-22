@@ -114,18 +114,15 @@ def data_sender(config,debug=True):
                 if time.time() > time_limit_dht:
                     DHT = dht.sensor()
                     ok_dht= DHT.initSensor(DHT_PIN)
-                    break
             temp, humid, ok_dht = DHT.getSensor()
 
             # Get PM2.5 data
-
             time_limit_pm25 = time.time() + 60   #  from now
             while not ok_pm25:
                 pm2_5, ok_pm25 = PM2_5.getSensor()
                 if time.time() > time_limit_pm25:
                     PM2_5 = zh03b.sensor()
-                    ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-                    break
+                    ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)                  
             pm2_5, ok_pm25 = PM2_5.getSensor()
 
             # Get battery data
