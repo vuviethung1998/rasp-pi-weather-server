@@ -135,8 +135,10 @@ def data_sender(config,debug=True):
                 print('Send data to Server:' + URL)
                 print(body_str)
             ok_post = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
-            if not ok_post:
+            while not ok_post:
                 if debug: print('Error send data to Server')
+                ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+                ok_post = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
             sleep(config['sleep_time'])
 
         except KeyboardInterrupt:
