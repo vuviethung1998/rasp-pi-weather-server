@@ -174,7 +174,7 @@ def data_sender(config,debug=True):
                 lst_str = gps.split(',') # split GPS string2
                 lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
             else:
-                lat, ns, lon, ew, _, _, altitude, speed, _ = '','','','','','','',''
+                lat, ns, lon, ew, _, _, altitude, speed, _ = '','','','','','','','',''
 
 
             # Get time data
