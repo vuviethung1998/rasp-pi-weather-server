@@ -79,13 +79,13 @@ def data_sender(config,debug=True):
     sim.gps_start() # start gps
     gps, ok_gps = sim.gps_get_data()
 
-    # Wait till turn gps on, if over 2 mins move on 
-    # time_limit = time.time() + 2 * 60
-    # while not ok_gps:
-    #     _, ok_gps = sim.gps_get_data()
-    #     if time.time() > time_limit:
-    #         break
-    # print('All devices are on.')
+    # Wait till turn gps on, if over 3 mins move on 
+    time_limit = time.time() + 3 * 60
+    while not ok_gps:
+        _, ok_gps = sim.gps_get_data()
+        if time.time() > time_limit:
+            break
+    print('All devices are on.')
 
     # Done init
     main_run = True
@@ -114,6 +114,7 @@ def data_sender(config,debug=True):
                 if time.time() > time_limit_dht:
                     DHT = dht.sensor()
                     ok_dht= DHT.initSensor(DHT_PIN)
+                    break
             temp, humid, ok_dht = DHT.getSensor()
 
             # Get PM2.5 data
@@ -124,6 +125,7 @@ def data_sender(config,debug=True):
                 if time.time() > time_limit_pm25:
                     PM2_5 = zh03b.sensor()
                     ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+                    break
             pm2_5, ok_pm25 = PM2_5.getSensor()
 
             # Get battery data
