@@ -115,38 +115,40 @@ def data_sender(config,debug=True):
     # PORT_O3 = '/dev/ttyAMA4'
     SensorReadMode = 1
 
-    # init state of devices
-    state = initState()
+    # # init state of devices
+    # state = initState()
     # init sensor
-    #ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-    #ok_dht= DHT.initSensor(DHT_PIN)
+    ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+    ok_dht= DHT.initSensor(DHT_PIN)
     # init sim
-    #sim.power_on(config["POWER_KEY"])
-    #ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+    sim.power_on(config["POWER_KEY"])
+    ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
     # init gps
-    #sim.gps_start() # start gps
-    #gps, ok_gps = sim.gps_get_data()
+    sim.gps_start() # start gps
+    gps, ok_gps = sim.gps_get_data()
     
-    # init sim
-    startSim(config,debug)
+    # # init sim
+    # startSim(config,debug)
 
-    # define state
-    #state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
+    # # define state
+    # state['dht'], state['pm25'], state['gps'], state['sim'] = ok_dht, ok_pm25, ok_gps, ok_sim
 
-    # if device cannot start within limit range then restart sim 
-    time_limit_all_devices = time.time() + 10 * 60   # 180s from now
-    while not checkAllSensorSucceed(state):
-        ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
-        print(ok_pm25)
-        ok_dht= DHT.initSensor(DHT_PIN)
-        ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
-        _, ok_gps = sim.gps_get_data()
-        state['dht'], state['pm25'], state['sim'], state['gps'] = ok_dht, ok_pm25, ok_sim, ok_gps
+    # # if device cannot start within limit range then restart sim 
+    # time_limit_all_devices = time.time() + 10 * 60   # 180s from now
+    # while not checkAllSensorSucceed(state):
+    #     ok_pm25 = PM2_5.initSensor(PORT_PM2_5, SensorReadMode)
+    #     print(ok_pm25)
+    #     ok_dht= DHT.initSensor(DHT_PIN)
+    #     ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
+    #     _, ok_gps = sim.gps_get_data()
+    #     state['dht'], state['pm25'], state['sim'], state['gps'] = ok_dht, ok_pm25, ok_sim, ok_gps
 
-        if not checkAllSensorSucceed(state) and time.time() > time_limit_all_devices: 
-            restartSim(config, debug)
-            time_limit_all_devices  = time.time() + 10 * 60
-    print('All devices are on.')
+    #     if time.time() > time_limit_all_devices:
+    #         break
+    #     # if not checkAllSensorSucceed(state) and time.time() > time_limit_all_devices:
+    #     #     restartSim(config, debug)
+    #     #     time_limit_all_devices  = time.time() + 10 * 60
+    # print('All devices are on.')
 
     # Done init
     main_run = True
@@ -156,50 +158,59 @@ def data_sender(config,debug=True):
         try:
             # time_sim = sim.time_get()
             # Get GPS data
-            time_limit_gps = time.time() + 60   #  from now
-            while True:
-                gps, _ = sim.gps_get_data()
-                if gps == '' or gps is None:
-                    state_gps = False
-                else:
-                    state_gps =  True
-                state_data = reTryUntilGetGPSData(config, debug, timelimit=time_limit_gps, device_ok=state_gps) # check data passed
-                if state_data:
-                    break
-            lst_str = gps.split(',') # split GPS string2
-            lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
+
+            # time_limit_gps = time.time() + 60 *10 #  from now
+            # while True:
+            #     gps, _ = sim.gps_get_data()
+            #     if gps == '' or gps is None:
+            #         state_gps = False
+            #     else:
+            #         state_gps =  True
+            #     state_data = reTryUntilGetGPSData(config, debug, timelimit=time_limit_gps, device_ok=state_gps) # check data passed
+            #     if state_data:
+            #         break
+            gps, ok_gps = sim.gps_get_data()
+            if ok_gps:
+                lst_str = gps.split(',') # split GPS string2
+                lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
+            else:
+                lat, ns, lon, ew, _, _, altitude, speed, _ = '','','','','','','',''
+
 
             # Get time data
             cur_time =  datetime.now().strftime("%H:%M:%S")
             cur_date =  datetime.now().strftime("%m-%d-%Y")
             created_at = datetime.now().strftime("%H:%M:%S %m-%d-%Y")
 
-            # Get temp humid
-            time_limit_dht = time.time() + 60   #  from now
-            while True:
-                temp, humid, _ = DHT.getSensor()
-                if temp == 0 or humid == 0 or temp is None or humid is None:
-                    state_dht = False
-                else:
-                    state_dht =  True
-                #state_data = reTryUntilGetDHTData(DHT_PIN, time_limit_dht, state_dht) # check data passed
-                state_data = reTryUntilGetData(time_limit_dht, state_dht)
-                if state_data:
-                    break
+            temp, humid, _ = DHT.getSensor()
+            # # Get temp humid
+            # time_limit_dht = time.time() + 60   #  from now
+            # while True:
+            #     temp, humid, _ = DHT.getSensor()
+            #     if temp == 0 or humid == 0 or temp is None or humid is None:
+            #         state_dht = False
+            #     else:
+            #         state_dht =  True
+            #     #state_data = reTryUntilGetDHTData(DHT_PIN, time_limit_dht, state_dht) # check data passed
+            #     state_data = reTryUntilGetData(time_limit_dht, state_dht)
+            #     if state_data:
+            #         break
 
             # Get PM2.5 data
-            time_limit_pm25 = time.time() + 60   #  from now
-            while True:
-                pm2_5, _ = PM2_5.getSensor()
-                if pm2_5 == 0 or pm2_5 is None:
-                    state_pm25 = False
-                else:
-                    state_pm25 = True
-                #state_data = reTryUntilGetPM25Data(PORT_PM2_5, SensorReadMode, time_limit_pm25, state_pm25)  # check data passed
-                state_data = reTryUntilGetData(time_limit_pm25, state_pm25)
-                if state_data:
-                    break
+
             pm2_5, _ = PM2_5.getSensor()
+            # time_limit_pm25 = time.time() + 60   #  from now
+            # while True:
+            #     pm2_5, _ = PM2_5.getSensor()
+            #     if pm2_5 == 0 or pm2_5 is None:
+            #         state_pm25 = False
+            #     else:
+            #         state_pm25 = True
+            #     #state_data = reTryUntilGetPM25Data(PORT_PM2_5, SensorReadMode, time_limit_pm25, state_pm25)  # check data passed
+            #     state_data = reTryUntilGetData(time_limit_pm25, state_pm25)
+            #     if state_data:
+            #         break
+            # pm2_5, _ = PM2_5.getSensor()
 
             # Get battery data
             voltage, current, power, percent= Battery.getBusVoltage_V(), Battery.getCurrent_mA(), Battery.getPower_W(), Battery.getPercent()
