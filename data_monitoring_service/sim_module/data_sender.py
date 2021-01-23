@@ -6,7 +6,7 @@ import time
 import json
 from sensor_monitoring import dht, wv20,ze12, ze15, ze25, zh03b, INA219 as battery
 import board
-from datetime import datetime
+from datetime import datetime, time as mytime
 from time import sleep
 
 def is_time_between(begin_time, end_time, check_time=None):
@@ -115,7 +115,7 @@ def data_sender(config,debug=True):
             created_at = datetime.now().strftime("%H:%M:%S %m-%d-%Y")
             
             # if between 0 and 1 am -> convert to 00
-            if is_time_between(time(0,0), time(1,0)):
+            if is_time_between(mytime(0,0), mytime(1,0)):
                 lst_min_sec = cur_time.split(':')[1:]
                 cur_time = '00:' + ':'.join(lst_min_sec)
                 created_at = cur_time + ' ' + cur_date
