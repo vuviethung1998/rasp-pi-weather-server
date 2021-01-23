@@ -9,6 +9,14 @@ import board
 from datetime import datetime
 from time import sleep
 
+def is_time_between(begin_time, end_time, check_time=None):
+    # If check time is not given, default to current UTC time
+    check_time = check_time or datetime.utcnow().time()
+    if begin_time < end_time:
+        return check_time >= begin_time and check_time <= end_time
+    else: # crosses midnight
+        return check_time >= begin_time or check_time <= end_time
+
 def getConfig(confile):
     with open(confile) as config_file:
         config = json.load(config_file)
@@ -105,6 +113,13 @@ def data_sender(config,debug=True):
             cur_time =  datetime.now().strftime("%H:%M:%S")
             cur_date =  datetime.now().strftime("%m-%d-%Y")
             created_at = datetime.now().strftime("%H:%M:%S %m-%d-%Y")
+            
+            # if between 0 and 1 am -> convert to 00
+            if is_time_between(time(0,0), time(1,0)):
+                lst_min_sec = cur_time.split(':')[1:]
+                cur_time = '00:' + ':'.join(lst_min_sec)
+                created_at = cur_time + ' ' + cur_date
+
 
             
             # Get temp humid
