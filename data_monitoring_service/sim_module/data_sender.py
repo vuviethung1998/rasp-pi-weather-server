@@ -8,6 +8,9 @@ from sensor_monitoring import dht, wv20,ze12, ze15, ze25, zh03b, INA219 as batte
 import board
 from datetime import datetime, time as mytime
 from time import sleep
+import logging
+from logging.handlers import RotatingFileHandler
+
 
 def is_time_between(begin_time, end_time, check_time=None):
     # If check time is not given, default to current UTC time
@@ -34,12 +37,12 @@ def getURL(config):
 
 
 # if time exceeds time limit then restart device
-def restartSim(config, debug):
+def restartSim(config,debug=True):
     stopSim(config)
-    startSim(config, debug)
+    startSim(config,debug)
     
     
-def startSim(config, debug):
+def startSim(config, debug=True):
     sim.power_on(config["POWER_KEY"])
     ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
     sim.gps_start() # start gps
@@ -52,6 +55,17 @@ def stopSim(config):
 
 # send data to server
 def data_sender(config,debug=True):
+    # create logger with 'spam_application'
+    logging.basicConfig(filename='./debug.log',
+                            filemode='a',
+                            format='%(asctime)s,%(msecs)d %(name)s %(levelname)s %(message)s',
+                            datefmt='%H:%M:%S',
+                            level=logging.DEBUG)
+
+    logging.info("Running Urban Planning")
+    logger = logging.getLogger('urbanGUI')
+
+
     # init params
     URL = getURL(config)
     content_type = config['content_type']
@@ -93,7 +107,7 @@ def data_sender(config,debug=True):
         _, ok_gps = sim.gps_get_data()
         if time.time() > time_limit:
             break
-    print('All devices are on.')
+    logger.info('All devices are on.')
 
     # Done init
     main_run = True
@@ -106,6 +120,7 @@ def data_sender(config,debug=True):
                 lst_str = gps.split(',') # split GPS string2
                 lat, ns, lon, ew, _, _, altitude, speed, _ = float(lst_str[0].strip()) /100, lst_str[1].strip(), float(lst_str[2].strip()) /100, lst_str[3].strip(), lst_str[4].strip(), lst_str[5].strip(), lst_str[6].strip(), lst_str[7].strip(), lst_str[8].strip()
             else:
+                logger.error('GPS failed')
                 lat, ns, lon, ew, _, _, altitude, speed, _ = '','','','','','','','',''
 
 
@@ -128,6 +143,7 @@ def data_sender(config,debug=True):
             time_limit_dht = time.time() + 60  #  from now
 
             while not ok_dht or temp == 0 or humid == 0:
+                logger.error('dht failed')
                 temp, humid, ok_dht = DHT.getSensor()
                 if time.time() > time_limit_dht:
                     DHT = dht.sensor()
@@ -138,6 +154,7 @@ def data_sender(config,debug=True):
             pm2_5, ok_pm25 = PM2_5.getSensor()
             time_limit_pm25 = time.time() + 60   #  from now
             while not ok_pm25 or pm2_5 == 0:
+                logger.error('pm2.5 failed')
                 pm2_5, ok_pm25 = PM2_5.getSensor()
                 if time.time() > time_limit_pm25:
                     PM2_5 = zh03b.sensor()
@@ -151,20 +168,25 @@ def data_sender(config,debug=True):
             data = {'sleep_time': config['sleep_time'], 'createdAt': created_at, 'date': cur_date, 'time': cur_time, 'lat':lat, 'lon':lon, 'ns':ns, 'ew': ew, 'altitude': altitude, 'speed': speed, 'pm2_5_val': pm2_5, 'temp_val': temp, 'humid_val': humid, "voltage": voltage, "current": current, "power": power, "battery_percent": percent }
             body_str = get_body_str(data)
             if debug:
-                print('Send data to Server:' + URL)
-                print(body_str)
+                logger.info('Send data to Server:' + URL)
+                logger.info('Body string: '+ body_str)
             ok_post = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
+            
+            time_limit_post = time.time() + 3* 60
             while not ok_post:
-                if debug: print('Error send data to Server')
+                if debug: logger.error('Error send data to Server')
                 ok_sim = sim.at_init(config["SIM_SERIAL_PORT"], config["SIM_SERIAL_BAUD"], debug)
                 ok_post = sim.http_post(URL, content_type, body_str, '', config["HTTP_CONNECT_TIMEOUT"], config["HTTP_RESPONSE_TIMEOUT"])
+
+                if time.time() > time_limit_post:
+                    if debug: logger.error('Error send data to Server. Restarting SIM')
+                    restartSim(config)
+                    time_limit_post = time.time() + 3 * 60
             sleep(config['sleep_time'])
 
         except KeyboardInterrupt:
             main_run = False
             stopSim(config)
-
-
 
 if __name__=="__main__":
     config = getConfig()
