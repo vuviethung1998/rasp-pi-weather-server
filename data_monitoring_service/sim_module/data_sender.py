@@ -62,8 +62,8 @@ def data_sender(config,debug=True):
                             datefmt='%H:%M:%S',
                             level=logging.DEBUG)
 
-    logging.info("Running Urban Planning")
-    logger = logging.getLogger('urbanGUI')
+    logging.info("Running logger")
+    logger = logging.getLogger('myLogger')
 
 
     # init params
@@ -106,6 +106,7 @@ def data_sender(config,debug=True):
     while not ok_gps:
         _, ok_gps = sim.gps_get_data()
         if time.time() > time_limit:
+            logger.error('Gps is not activated')
             break
     logger.info('All devices are on.')
 
